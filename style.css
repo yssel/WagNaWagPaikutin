@@ -1,0 +1,47 @@
+body {
+	background-image: url("background.jpg");
+}
+
+#menu {
+	text-align: center;
+	margin-top: 250px;
+	color: white;
+	font-family: 'Fira Sans', sans-serif;
+	font-family: 'Orbitron', sans-serif;
+}
+
+#game-title {
+	font-size: 150px;
+	font-weight: bold;
+}
+
+#game-title-2 {
+	font-size: 35px;
+	font-weight: bold;
+	margin-right: 500px;
+}
+
+.menu-button {
+	font-family: 'Fira Sans', sans-serif;
+	font-family: 'Orbitron', sans-serif;
+	color: white;
+	background: none;
+	font-size: 30px;
+	margin-top: 20px;
+	padding: 10px;
+	height: 50px;
+	width: 350px;
+	border: 3px solid white;
+	transition: background 0.5s;
+}
+
+#button-div {
+	margin-top: 40px;
+}
+
+.menu-button:hover {
+	color: black;
+	background: white;
+	font-weight: bold;
+	cursor: pointer;
+}
