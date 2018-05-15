@@ -3,6 +3,10 @@ var cubeRotation = 0;
 var y_axis = false;
 var x_axis = false;
 var can_rotate = true;
+var seconds = 5;
+var timer = null;
+var countdown = null;
+countdown = !!countdown ? countdown : countDown(timer);
 var front_face;
 var game_over = false;
 var score = 0;
@@ -29,7 +33,14 @@ function checkIfValidMove(move){
 	}
 	alert(ret_value);
 	return ret_value;
-	
+}
+
+function countDown(timer){
+  timer = setInterval(function(){
+    // if seconds < 0 = seconds = 0
+    if(seconds <= 1) clearInterval(timer)
+    document.getElementById('time').innerHTML = --seconds;
+  }, 1000)
 }
 
 function randInst() {
@@ -139,7 +150,10 @@ function main() {
   	
   	rotate(gl, programInfo, buffers, texture, 0); //draws the scene when loaded
   	document.onkeydown = function(e){ //rotates depending on the key pressed
-  		if(can_rotate==true){
+      clearInterval(timer)
+      seconds = 6
+
+      if(can_rotate==true){
   			cubeRotation = 0;
 	  		var deltaTime;
 	  		var move;
@@ -167,6 +181,7 @@ function main() {
 		            y_axis = true;
 		            deltaTime = one_rotation/20*-1;
 		            move = 2;
+
 		            break;
 		        default: 
 		         	return;
@@ -182,7 +197,7 @@ function main() {
 				alert("GAME OVER");
 			}
   		}
-  		
+  	main();
 	};
 }
 
@@ -312,6 +327,25 @@ function initBuffers(gl) {
   const textureCoordBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
   const instText = randInst();
+
+  //check if instruction is colored
+  if(instText[0]==0.6 || instText[0]==0.81){
+    //check color of light
+    if(instText[1]==0){
+      //insert randomization of light position
+      console.log("pula");
+    }else if(instText[1]==0.2){
+      //insert randomization of light position
+      console.log("asul");
+    }else if(instText[1]==0.4){
+      //insert randomization of light position
+      console.log("dilaw");
+    }else if(instText[1]==0.6){
+      //insert randomization of light position
+      console.log("berde");
+    }
+  }
+
   const textureCoordinates = [
     // Front
     instText[0], instText[1], 
