@@ -1,3 +1,26 @@
 body {
 	text-align: center;
 }
+
+#right-panel {
+	margin-right: 50px;
+	height: 640px; 
+	width: 350px; 
+	float: right;
+}
+
+#back-div {
+	 height: 120px; 
+	 width: 350px;
+}
+
+#game-status-div {
+	border: 5px solid white;
+	height: 550px;
+	font-family: 'Fira Sans', sans-serif;
+	font-family: 'Orbitron', sans-serif;
+}
+
+canvas {
+	margin-top: 30px;
+}
