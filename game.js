@@ -11,9 +11,8 @@ countdown = !!countdown ? countdown : countDown(timer);
 function countDown(timer){
   timer = setInterval(function(){
     // if seconds < 0 = seconds = 0
-    if(seconds <= 0) clearInterval(timer)
-    document.getElementById('time').innerHTML = seconds;
-    seconds--;
+    if(seconds <= 1) clearInterval(timer)
+    document.getElementById('time').innerHTML = --seconds;
   }, 1000)
 }
 
@@ -126,7 +125,7 @@ function main() {
   	rotate(gl, programInfo, buffers, texture, 0); //draws the scene when loaded
   	document.onkeydown = function(e){ //rotates depending on the key pressed
       clearInterval(timer)
-      seconds = 5
+      seconds = 6
 
       if(can_rotate==true){
   			cubeRotation = 0;
