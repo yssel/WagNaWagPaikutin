@@ -31,8 +31,12 @@ function checkIfValidMove(move){
 	for(var i=0; i<answers[front_face].length; i++){
 		if(move==answers[front_face][i]) ret_value = true;
 	}
-	alert(ret_value);
+	
 	return ret_value;
+}
+
+function changeScore(){
+	 document.getElementById('score').innerHTML = score;
 }
 
 function countDown(timer){
@@ -188,12 +192,14 @@ function main() {
 		    }
 		    if(checkIfValidMove(move)==true){
 		    	score++;
+		    	changeScore();
 			    can_rotate = false;
 			    rotate(gl, programInfo, buffers, texture, deltaTime);
 			    main();
 			}
 			else{
 				game_over = true;
+				score = 0;
 				alert("GAME OVER");
 			}
   		}
