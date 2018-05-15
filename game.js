@@ -1,3 +1,7 @@
+const one_rotation = 6.28319; //value of 360 degrees in radians
+var cubeRotation = 0;
+var y_axis = false;
+var x_axis = false;
 
 const instructions = [
   [0.2, 0.0, 0.2, 0.2, 0.0, 0.2, 0.0, 0.0,],
@@ -83,52 +87,74 @@ function main() {
   // Look up which attributes our shader program is using
   // for aVertexPosition, aVertexNormal, aTextureCoord,
   // and look up uniform locations.
-  const programInfo = {
-    program: shaderProgram,
-    attribLocations: {
-      vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-      vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
-      textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
-    },
-    uniformLocations: {
-      projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-      modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
-      normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
-      uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
-    },
-  };
+	const programInfo = {
+		program: shaderProgram,
+		attribLocations: {
+			vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+			vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
+			textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
+		},
+		uniformLocations: {
+			projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+			modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+			normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
+			uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
+		},
+	};
 
-  // Here's where we call the routine that builds all the
-  // objects we'll be drawing.
-  const buffers = initBuffers(gl);
+  	const buffers = initBuffers(gl);
+  	const texture = loadTexture(gl, 'directions_atlas.png');
+  	
+  	rotate(gl, programInfo, buffers, texture, 0); //draws the scene when loaded
+  	document.onkeydown = function(e){ //rotates depending on the key pressed
+  		cubeRotation = 0;
+  		var deltaTime;
+	    switch (e.keyCode) {
+	        case 37:
+	            x_axis = true;
+	            y_axis = false;
+	            deltaTime = one_rotation/20;
+	            break;
+	        case 38:
+	            x_axis = false;
+	            y_axis = true;
+	            deltaTime = one_rotation/20;
+	            break;
+	        case 39:
+	            x_axis = true;
+	            y_axis = false;
+	            deltaTime = one_rotation/20*-1;
+	            break;
+	        case 40:
+	            x_axis = false;
+	            y_axis = true;
+	            deltaTime = one_rotation/20*-1;
+	            break;
+	    }
 
-  const texture = loadTexture(gl, 'directions_atlas.png');
-
-  var then = 0;
-
-  // Draw the scene repeatedly
-  function render(now) {
-    //now *= 0.001;  // convert to seconds
-    //const deltaTime = now - then;
-    //then = now;
-
-    drawScene(gl, programInfo, buffers, texture, 0);
-
-    requestAnimationFrame(render);
-  }
-  requestAnimationFrame(render);
+	    rotate(gl, programInfo, buffers, texture, deltaTime);
+	};
 }
 
-//
-// initBuffers
-//
+function rotate(gl, programInfo, buffers, texture, deltaTime){
+	var increment = 0;
+	var count = 0;
+  	//Draw the scene repeatedly
+  	function render(now) {
+  		drawScene(gl, programInfo, buffers, texture, deltaTime);
+	    count++;
+	    if(count==21) return;
+	    requestAnimationFrame(render);
+	}
+	requestAnimationFrame(render);
+}
+
+
 // Initialize the buffers we'll need. For this demo, we just
 // have one object -- a simple three-dimensional cube.
-//
 function initBuffers(gl) {
 
-  // Create a buffer for the cube's vertex positions.
-
+  // Create a buffer for the cube's vertex positions
   const positionBuffer = gl.createBuffer();
 
   // Select the positionBuffer as the one to apply buffer
@@ -405,12 +431,18 @@ function drawScene(gl, programInfo, buffers, texture, deltaTime) {
               modelViewMatrix,  // matrix to rotate
               1 * -45/100,// amount to rotate in radians
               [1, 0, 0]);       // axis to rotate around (Y)
-  /*if(x_axis == true){
+  if(x_axis == true){
     mat4.rotate(modelViewMatrix,  // destination matrix
               modelViewMatrix,  // matrix to rotate
-              cubeRotation * 45/100,// amount to rotate in radians
+              cubeRotation,// amount to rotate in radians
               [0, 1, 0]);       // axis to rotate around (X)
-  }*/
+  }
+  else if(y_axis == true){
+    mat4.rotate(modelViewMatrix,  // destination matrix
+              modelViewMatrix,  // matrix to rotate
+              cubeRotation,// amount to rotate in radians
+              [1, 0, 0]);       // axis to rotate around (Y)
+  }
   const normalMatrix = mat4.create();
   mat4.invert(normalMatrix, modelViewMatrix);
   mat4.transpose(normalMatrix, normalMatrix);
@@ -517,7 +549,7 @@ function drawScene(gl, programInfo, buffers, texture, deltaTime) {
 
   // Update the rotation for the next draw
 
-  //cubeRotation += deltaTime;
+  cubeRotation += deltaTime;
 }
 
 //
