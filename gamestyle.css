@@ -14,9 +14,9 @@ body {
 	 width: 350px;
 }
 
-#game-status-div {
+.game-status-div {
 	border: 5px solid white;
-	height: 550px;
+	height: 230px;
 	font-family: 'Fira Sans', sans-serif;
 	font-family: 'Orbitron', sans-serif;
 }
