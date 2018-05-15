@@ -3,19 +3,47 @@ var cubeRotation = 0;
 var y_axis = false;
 var x_axis = false;
 var can_rotate = true;
+var front_face;
+var game_over = false;
+var score = 0;
+
+function checkIfValidMove(move){
+	if(front_face>=10) return true;
+	const answers = [
+		[0],
+		[1],
+		[2],
+		[3],
+		[],
+		[1, 2, 3],
+		[0, 2, 3],
+		[0, 1, 3],
+		[0, 1, 2],
+		[0, 1, 2, 3]
+	];
+	
+	var ret_value = false;
+
+	for(var i=0; i<answers[front_face].length; i++){
+		if(move==answers[front_face][i]) ret_value = true;
+	}
+	alert(ret_value);
+	return ret_value;
+	
+}
 
 function randInst() {
   const instructions = [
-    [0.2, 0.0, 0.2, 0.2, 0.0, 0.2, 0.0, 0.0,],
-    [0.2, 0.2, 0.2, 0.4, 0.0, 0.4, 0.0, 0.2,],
-    [0.2, 0.4, 0.2, 0.6, 0.0, 0.6, 0.0, 0.4,],
-    [0.2, 0.6, 0.2, 0.8, 0.0, 0.8, 0.0, 0.6,],
-    [0.2, 0.8, 0.2, 1.0, 0.0, 1.0, 0.0, 0.8,],
-    [0.4, 0.0, 0.4, 0.2, 0.2, 0.2, 0.2, 0.0,],
-    [0.4, 0.2, 0.4, 0.4, 0.2, 0.4, 0.2, 0.2,],
-    [0.4, 0.4, 0.4, 0.6, 0.2, 0.6, 0.2, 0.4,],
-    [0.4, 0.6, 0.4, 0.8, 0.2, 0.8, 0.2, 0.6,],
-    [0.4, 0.8, 0.4, 1.0, 0.2, 1.0, 0.2, 0.8,],
+    [0.2, 0.0, 0.2, 0.2, 0.0, 0.2, 0.0, 0.0,], //hilaga
+    [0.2, 0.2, 0.2, 0.4, 0.0, 0.4, 0.0, 0.2,], //kanluran
+    [0.2, 0.4, 0.2, 0.6, 0.0, 0.6, 0.0, 0.4,], //timog
+    [0.2, 0.6, 0.2, 0.8, 0.0, 0.8, 0.0, 0.6,], //silangan
+    [0.2, 0.8, 0.2, 1.0, 0.0, 1.0, 0.0, 0.8,], //tumunganga
+    [0.4, 0.0, 0.4, 0.2, 0.2, 0.2, 0.2, 0.0,], //hindi hilaga
+    [0.4, 0.2, 0.4, 0.4, 0.2, 0.4, 0.2, 0.2,], //hindi kanluran
+    [0.4, 0.4, 0.4, 0.6, 0.2, 0.6, 0.2, 0.4,], //hindi timog
+    [0.4, 0.6, 0.4, 0.8, 0.2, 0.8, 0.2, 0.6,], //hindi silangan
+    [0.4, 0.8, 0.4, 1.0, 0.2, 1.0, 0.2, 0.8,], //huwag tumunganga
     [0.6, 0.0, 0.6, 0.2, 0.4, 0.2, 0.4, 0.0,],
     [0.6, 0.2, 0.6, 0.4, 0.4, 0.4, 0.4, 0.2,],
     [0.6, 0.4, 0.6, 0.6, 0.4, 0.6, 0.4, 0.4,],
@@ -27,6 +55,7 @@ function randInst() {
   ];
 
   const randIndex = Math.floor(Math.random()*(18)+1); 
+  front_face = randIndex;
   const randText = instructions[randIndex];
   return randText;
 }
@@ -113,37 +142,45 @@ function main() {
   		if(can_rotate==true){
   			cubeRotation = 0;
 	  		var deltaTime;
+	  		var move;
 		    switch (e.keyCode) {
-		        case 37:
+		        case 37: //left
 		            x_axis = true;
 		            y_axis = false;
 		            deltaTime = one_rotation/20;
-	              main();
+					move = 1;
 		            break;
-		        case 38:
+		        case 38: //up
 		            x_axis = false;
 		            y_axis = true;
 		            deltaTime = one_rotation/20;
-	              main();
+		            move = 0;
 		            break;
-		        case 39:
+		        case 39: //right
 		            x_axis = true;
 		            y_axis = false;
 		            deltaTime = one_rotation/20*-1;
-	              main();
+		            move = 3;
 		            break;
-		        case 40:
+		        case 40: //down
 		            x_axis = false;
 		            y_axis = true;
 		            deltaTime = one_rotation/20*-1;
-	              main();
+		            move = 2;
 		            break;
-		         default: 
+		        default: 
 		         	return;
 		    }
-
-		    can_rotate = false;
-		    rotate(gl, programInfo, buffers, texture, deltaTime);
+		    if(checkIfValidMove(move)==true){
+		    	score++;
+			    can_rotate = false;
+			    rotate(gl, programInfo, buffers, texture, deltaTime);
+			    main();
+			}
+			else{
+				game_over = true;
+				alert("GAME OVER");
+			}
   		}
   		
 	};
@@ -156,7 +193,7 @@ function rotate(gl, programInfo, buffers, texture, deltaTime){
   	function render(now) {
   		drawScene(gl, programInfo, buffers, texture, deltaTime);
 	    count++;
-	    if(count==21){
+	    if(count==20){
 	    	can_rotate = true;
 	    	return;
 	    }
