@@ -2,6 +2,7 @@ const one_rotation = 6.28319; //value of 360 degrees in radians
 var cubeRotation = 0;
 var y_axis = false;
 var x_axis = false;
+var can_rotate = true;
 
 function randInst() {
   const instructions = [
@@ -109,36 +110,42 @@ function main() {
   	
   	rotate(gl, programInfo, buffers, texture, 0); //draws the scene when loaded
   	document.onkeydown = function(e){ //rotates depending on the key pressed
-  		cubeRotation = 0;
-  		var deltaTime;
-	    switch (e.keyCode) {
-	        case 37:
-	            x_axis = true;
-	            y_axis = false;
-	            deltaTime = one_rotation/20;
-              main();
-	            break;
-	        case 38:
-	            x_axis = false;
-	            y_axis = true;
-	            deltaTime = one_rotation/20;
-              main();
-	            break;
-	        case 39:
-	            x_axis = true;
-	            y_axis = false;
-	            deltaTime = one_rotation/20*-1;
-              main();
-	            break;
-	        case 40:
-	            x_axis = false;
-	            y_axis = true;
-	            deltaTime = one_rotation/20*-1;
-              main();
-	            break;
-	    }
+  		if(can_rotate==true){
+  			cubeRotation = 0;
+	  		var deltaTime;
+		    switch (e.keyCode) {
+		        case 37:
+		            x_axis = true;
+		            y_axis = false;
+		            deltaTime = one_rotation/20;
+	              main();
+		            break;
+		        case 38:
+		            x_axis = false;
+		            y_axis = true;
+		            deltaTime = one_rotation/20;
+	              main();
+		            break;
+		        case 39:
+		            x_axis = true;
+		            y_axis = false;
+		            deltaTime = one_rotation/20*-1;
+	              main();
+		            break;
+		        case 40:
+		            x_axis = false;
+		            y_axis = true;
+		            deltaTime = one_rotation/20*-1;
+	              main();
+		            break;
+		         default: 
+		         	return;
+		    }
 
-	    rotate(gl, programInfo, buffers, texture, deltaTime);
+		    can_rotate = false;
+		    rotate(gl, programInfo, buffers, texture, deltaTime);
+  		}
+  		
 	};
 }
 
@@ -149,7 +156,10 @@ function rotate(gl, programInfo, buffers, texture, deltaTime){
   	function render(now) {
   		drawScene(gl, programInfo, buffers, texture, deltaTime);
 	    count++;
-	    if(count==21) return;
+	    if(count==21){
+	    	can_rotate = true;
+	    	return;
+	    }
 	    requestAnimationFrame(render);
 	}
 	requestAnimationFrame(render);
