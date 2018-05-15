@@ -42,7 +42,23 @@ function changeScore(){
 function countDown(timer){
   timer = setInterval(function(){
     // if seconds < 0 = seconds = 0
-    if(seconds <= 1) clearInterval(timer)
+    //if(seconds <= 1) clearInterval(timer)
+    if(seconds<=0){
+    	if(front_face==4){
+    		score++;
+    		clearInterval(timer);
+    		seconds = 6;
+    		changeScore();
+    		countDown(timer);
+    		main();
+    	}
+    	else{
+    		score = 0;
+    		changeScore();
+    		alert("GAME OVER");
+    		clearInterval(timer);
+    	}
+    }
     document.getElementById('time').innerHTML = --seconds;
   }, 1000)
 }
@@ -151,12 +167,10 @@ function main() {
 
   	const buffers = initBuffers(gl);
   	const texture = loadTexture(gl, 'directions_atlas.png');
-  	
+  	clearInterval(timer)
+    seconds = 6
   	rotate(gl, programInfo, buffers, texture, 0); //draws the scene when loaded
   	document.onkeydown = function(e){ //rotates depending on the key pressed
-      clearInterval(timer)
-      seconds = 6
-
       if(can_rotate==true){
   			cubeRotation = 0;
 	  		var deltaTime;
@@ -201,9 +215,10 @@ function main() {
 				game_over = true;
 				score = 0;
 				alert("GAME OVER");
+				document.getElementById("score").innerHTML = score;
 			}
+			main();
   		}
-  	main();
 	};
 }
 
