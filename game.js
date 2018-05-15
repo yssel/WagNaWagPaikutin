@@ -91,6 +91,7 @@ function randInst() {
   return randText;
 }
 
+
 function main() {
   const canvas = document.querySelector('#glcanvas');
   const gl = canvas.getContext('webgl');
@@ -118,15 +119,18 @@ function main() {
       vTextureCoord = aTextureCoord;
       // Apply lighting effect
       highp vec3 vertexPosition = vec3(uModelViewMatrix * aVertexPosition);
-      highp vec3 ambientLight = vec3(0.3, 0.3, 0.3);
-      highp vec3 directionalLightColor = vec3(1, 1, 1);
-      highp vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
+
+
+      highp vec3 ambientLight = vec3(0.3, 0.3, 0.3) * vec3(0.9, 0.5, 0.3);
+      highp vec3 directionalLightColor = vec3(1, 0, 0);
+      highp vec3 directionalVector = normalize(vec3(0.0, 1.0, 0.0));
       highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
       highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
-      highp vec3 eyeDirectionNormal = normalize(vec3(0,1,0));
-      highp vec3 reflectedNormal = vec3(0,1,0) - vertexPosition;
+      highp vec3 eyeDirectionNormal = normalize(vec3(-1,0,0));
+      highp vec3 reflectedNormal = vec3(-1,0,0) - vertexPosition;
       highp float specularCoefficient = max(dot(reflectedNormal,eyeDirectionNormal),0.0);
       vLighting = ambientLight + (directionalLightColor * directional) + specularCoefficient;
+    
     }
   `;
 
