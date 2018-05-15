@@ -4,12 +4,15 @@ var y_axis = false;
 var x_axis = false;
 var can_rotate = true;
 var seconds = 5;
+var timer = null;
 
-function countDown(sec){
-  setInterval(function(){
+function countDown(sec, timer){
+  timer = setInterval(function(){
     document.getElementById('time').innerHTML = sec;
-    if(sec==0) clearInterval(countdown)
     sec--;
+    setTimeout(function(){
+      clearInterval(timer)
+    }, 6000)
   }, 1000)
 }
 
@@ -42,6 +45,7 @@ function randInst() {
 
 function main() {
   var countdown = countDown(seconds);
+
   const canvas = document.querySelector('#glcanvas');
   const gl = canvas.getContext('webgl');
 
