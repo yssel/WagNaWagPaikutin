@@ -3,6 +3,15 @@ var cubeRotation = 0;
 var y_axis = false;
 var x_axis = false;
 var can_rotate = true;
+var seconds = 5;
+
+function countDown(sec){
+  setInterval(function(){
+    document.getElementById('time').innerHTML = sec;
+    if(sec==0) clearInterval(countdown)
+    sec--;
+  }, 1000)
+}
 
 function randInst() {
   const instructions = [
@@ -32,6 +41,7 @@ function randInst() {
 }
 
 function main() {
+  var countdown = countDown(seconds);
   const canvas = document.querySelector('#glcanvas');
   const gl = canvas.getContext('webgl');
 
