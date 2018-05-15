@@ -5,14 +5,15 @@ var x_axis = false;
 var can_rotate = true;
 var seconds = 5;
 var timer = null;
+var countdown = null;
+countdown = !!countdown ? countdown : countDown(timer);
 
-function countDown(sec, timer){
+function countDown(timer){
   timer = setInterval(function(){
-    document.getElementById('time').innerHTML = sec;
-    sec--;
-    setTimeout(function(){
-      clearInterval(timer)
-    }, 6000)
+    // if seconds < 0 = seconds = 0
+    if(seconds <= 0) clearInterval(timer)
+    document.getElementById('time').innerHTML = seconds;
+    seconds--;
   }, 1000)
 }
 
@@ -44,7 +45,7 @@ function randInst() {
 }
 
 function main() {
-  var countdown = countDown(seconds);
+  console.log('reload')
 
   const canvas = document.querySelector('#glcanvas');
   const gl = canvas.getContext('webgl');
@@ -124,7 +125,10 @@ function main() {
   	
   	rotate(gl, programInfo, buffers, texture, 0); //draws the scene when loaded
   	document.onkeydown = function(e){ //rotates depending on the key pressed
-  		if(can_rotate==true){
+      clearInterval(timer)
+      seconds = 5
+
+      if(can_rotate==true){
   			cubeRotation = 0;
 	  		var deltaTime;
 		    switch (e.keyCode) {
