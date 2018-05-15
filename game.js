@@ -55,7 +55,7 @@ function countDown(timer){
     	else{
     		score = 0;
     		changeScore();
-    		alert("GAME OVER");
+    		//alert("GAME OVER");
     		clearInterval(timer);
     	}
     }
@@ -213,13 +213,17 @@ function main() {
 		    	changeScore();
 			    can_rotate = false;
 			    rotate(gl, programInfo, buffers, texture, deltaTime);
-			    main();
+			    //main();
 			}
 			else{
 				game_over = true;
 				score = 0;
-				alert("GAME OVER");
-				document.getElementById("score").innerHTML = score;
+				//alert("GAME OVER");
+        var isOver = confirm("TALO KA NA\n(Lalaban ka pa ba?)");
+        if (!isOver){
+          document.getElementById("back").click();
+        }
+        changeScore();
 			}
 			main();
   		}
