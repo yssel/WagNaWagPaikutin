@@ -45,8 +45,6 @@ function randInst() {
 }
 
 function main() {
-  console.log('reload')
-
   const canvas = document.querySelector('#glcanvas');
   const gl = canvas.getContext('webgl');
 
@@ -132,29 +130,29 @@ function main() {
   			cubeRotation = 0;
 	  		var deltaTime;
 		    switch (e.keyCode) {
-		        case 37:
-		            x_axis = true;
-		            y_axis = false;
-		            deltaTime = one_rotation/20;
-	              main();
-		            break;
-		        case 38:
-		            x_axis = false;
-		            y_axis = true;
-		            deltaTime = one_rotation/20;
-	              main();
-		            break;
 		        case 39:
 		            x_axis = true;
 		            y_axis = false;
-		            deltaTime = one_rotation/20*-1;
-	              main();
+		            deltaTime = one_rotation/20;
+	              //main();
 		            break;
 		        case 40:
 		            x_axis = false;
 		            y_axis = true;
+		            deltaTime = one_rotation/20;
+	              //main();
+		            break;
+		        case 37:
+		            x_axis = true;
+		            y_axis = false;
 		            deltaTime = one_rotation/20*-1;
-	              main();
+	              //main();
+		            break;
+		        case 38:
+		            x_axis = false;
+		            y_axis = true;
+		            deltaTime = one_rotation/20*-1;
+	              //main();
 		            break;
 		         default: 
 		         	return;
@@ -163,7 +161,7 @@ function main() {
 		    can_rotate = false;
 		    rotate(gl, programInfo, buffers, texture, deltaTime);
   		}
-  		
+  	main();
 	};
 }
 
@@ -293,6 +291,25 @@ function initBuffers(gl) {
   const textureCoordBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
   const instText = randInst();
+
+  //check if instruction is colored
+  if(instText[0]==0.6 || instText[0]==0.81){
+    //check color of light
+    if(instText[1]==0){
+      //insert randomization of light position
+      console.log("pula");
+    }else if(instText[1]==0.2){
+      //insert randomization of light position
+      console.log("asul");
+    }else if(instText[1]==0.4){
+      //insert randomization of light position
+      console.log("dilaw");
+    }else if(instText[1]==0.6){
+      //insert randomization of light position
+      console.log("berde");
+    }
+  }
+
   const textureCoordinates = [
     // Front
     instText[0], instText[1], 
