@@ -2,32 +2,33 @@ const one_rotation = 6.28319; //value of 360 degrees in radians
 var cubeRotation = 0;
 var y_axis = false;
 var x_axis = false;
-var can_rotate = true;
 
-const instructions = [
-  [0.2, 0.0, 0.2, 0.2, 0.0, 0.2, 0.0, 0.0,],
-  [0.2, 0.2, 0.2, 0.4, 0.0, 0.4, 0.0, 0.2,],
-  [0.2, 0.4, 0.2, 0.6, 0.0, 0.6, 0.0, 0.4,],
-  [0.2, 0.6, 0.2, 0.8, 0.0, 0.8, 0.0, 0.6,],
-  [0.2, 0.8, 0.2, 1.0, 0.0, 1.0, 0.0, 0.8,],
-  [0.4, 0.0, 0.4, 0.2, 0.2, 0.2, 0.2, 0.0,],
-  [0.4, 0.2, 0.4, 0.4, 0.2, 0.4, 0.2, 0.2,],
-  [0.4, 0.4, 0.4, 0.6, 0.2, 0.6, 0.2, 0.4,],
-  [0.4, 0.6, 0.4, 0.8, 0.2, 0.8, 0.2, 0.6,],
-  [0.4, 0.8, 0.4, 1.0, 0.2, 1.0, 0.2, 0.8,],
-  [0.6, 0.0, 0.6, 0.2, 0.4, 0.2, 0.4, 0.0,],
-  [0.6, 0.2, 0.6, 0.4, 0.4, 0.4, 0.4, 0.2,],
-  [0.6, 0.4, 0.6, 0.6, 0.4, 0.6, 0.4, 0.4,],
-  [0.6, 0.6, 0.6, 0.8, 0.4, 0.8, 0.4, 0.6,],
-  [0.81, 0.0, 0.81, 0.2, 0.61, 0.2, 0.61, 0.0,],
-  [0.81, 0.2, 0.81, 0.4, 0.61, 0.4, 0.61, 0.2,],
-  [0.81, 0.4, 0.81, 0.6, 0.61, 0.6, 0.61, 0.4,],
-  [0.81, 0.6, 0.81, 0.8, 0.61, 0.8, 0.61, 0.6,]
-];
+function randInst() {
+  const instructions = [
+    [0.2, 0.0, 0.2, 0.2, 0.0, 0.2, 0.0, 0.0,],
+    [0.2, 0.2, 0.2, 0.4, 0.0, 0.4, 0.0, 0.2,],
+    [0.2, 0.4, 0.2, 0.6, 0.0, 0.6, 0.0, 0.4,],
+    [0.2, 0.6, 0.2, 0.8, 0.0, 0.8, 0.0, 0.6,],
+    [0.2, 0.8, 0.2, 1.0, 0.0, 1.0, 0.0, 0.8,],
+    [0.4, 0.0, 0.4, 0.2, 0.2, 0.2, 0.2, 0.0,],
+    [0.4, 0.2, 0.4, 0.4, 0.2, 0.4, 0.2, 0.2,],
+    [0.4, 0.4, 0.4, 0.6, 0.2, 0.6, 0.2, 0.4,],
+    [0.4, 0.6, 0.4, 0.8, 0.2, 0.8, 0.2, 0.6,],
+    [0.4, 0.8, 0.4, 1.0, 0.2, 1.0, 0.2, 0.8,],
+    [0.6, 0.0, 0.6, 0.2, 0.4, 0.2, 0.4, 0.0,],
+    [0.6, 0.2, 0.6, 0.4, 0.4, 0.4, 0.4, 0.2,],
+    [0.6, 0.4, 0.6, 0.6, 0.4, 0.6, 0.4, 0.4,],
+    [0.6, 0.6, 0.6, 0.8, 0.4, 0.8, 0.4, 0.6,],
+    [0.81, 0.0, 0.81, 0.2, 0.61, 0.2, 0.61, 0.0,],
+    [0.81, 0.2, 0.81, 0.4, 0.61, 0.4, 0.61, 0.2,],
+    [0.81, 0.4, 0.81, 0.6, 0.61, 0.6, 0.61, 0.4,],
+    [0.81, 0.6, 0.81, 0.8, 0.61, 0.8, 0.61, 0.6,]
+  ];
 
-
-const randIndex = Math.floor(Math.random()*(18)+1); 
-const randText = instructions[randIndex];
+  const randIndex = Math.floor(Math.random()*(18)+1); 
+  const randText = instructions[randIndex];
+  return randText;
+}
 
 function main() {
   const canvas = document.querySelector('#glcanvas');
@@ -108,36 +109,36 @@ function main() {
   	
   	rotate(gl, programInfo, buffers, texture, 0); //draws the scene when loaded
   	document.onkeydown = function(e){ //rotates depending on the key pressed
-  		if(can_rotate==true){
-  			cubeRotation = 0;
-  			var deltaTime;
-  			switch(e.keyCode) {
-		        case 37:
-		            x_axis = true;
-		            y_axis = false;
-		            deltaTime = one_rotation/20;
-		            break;
-		        case 38:
-		            x_axis = false;
-		            y_axis = true;
-		            deltaTime = one_rotation/20;
-		            break;
-		        case 39:
-		            x_axis = true;
-		            y_axis = false;
-		            deltaTime = one_rotation/20*-1;
-		            break;
-		        case 40:
-		            x_axis = false;
-		            y_axis = true;
-		            deltaTime = one_rotation/20*-1;
-		            break;
-		        default: 
-		        	return;
-		    }
-		    can_rotate = false;
-	    	rotate(gl, programInfo, buffers, texture, deltaTime);
-  		}
+  		cubeRotation = 0;
+  		var deltaTime;
+	    switch (e.keyCode) {
+	        case 37:
+	            x_axis = true;
+	            y_axis = false;
+	            deltaTime = one_rotation/20;
+              main();
+	            break;
+	        case 38:
+	            x_axis = false;
+	            y_axis = true;
+	            deltaTime = one_rotation/20;
+              main();
+	            break;
+	        case 39:
+	            x_axis = true;
+	            y_axis = false;
+	            deltaTime = one_rotation/20*-1;
+              main();
+	            break;
+	        case 40:
+	            x_axis = false;
+	            y_axis = true;
+	            deltaTime = one_rotation/20*-1;
+              main();
+	            break;
+	    }
+
+	    rotate(gl, programInfo, buffers, texture, deltaTime);
 	};
 }
 
@@ -148,10 +149,7 @@ function rotate(gl, programInfo, buffers, texture, deltaTime){
   	function render(now) {
   		drawScene(gl, programInfo, buffers, texture, deltaTime);
 	    count++;
-	    if(count==21){
-	    	can_rotate = true;
-	    	return;
-	    }
+	    if(count==21) return;
 	    requestAnimationFrame(render);
 	}
 	requestAnimationFrame(render);
@@ -266,13 +264,13 @@ function initBuffers(gl) {
 
   const textureCoordBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
-
+  const instText = randInst();
   const textureCoordinates = [
     // Front
-    randText[0], randText[1], 
-    randText[2], randText[3],  
-    randText[4], randText[5], 
-    randText[6], randText[7], 
+    instText[0], instText[1], 
+    instText[2], instText[3],  
+    instText[4], instText[5], 
+    instText[6], instText[7], 
     // Back
    	0.0, 0.0,
     0.0, 0.0,
