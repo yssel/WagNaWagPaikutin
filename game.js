@@ -35,6 +35,22 @@ function checkIfValidMove(move){
   return ret_value;
 }
 
+function checkColor(randomPosition, move){
+  var ret_value = false;
+  if(front_face>=10 && front_face<=13){
+    if(randomPosition==move){
+      ret_value = true;
+    }
+  }
+  else if(front_face>=14 && front_face<=17){
+    if(randomPosition!=move){
+      ret_value = true;
+    }
+  }
+
+  return ret_value;
+}
+
 function changeScore(){
    document.getElementById('score').innerHTML = score;
 }
@@ -91,10 +107,17 @@ function randInst() {
     [0.81, 0.6, 0.81, 0.8, 0.61, 0.8, 0.61, 0.6,]
   ];
 
-  const randIndex = Math.floor(Math.random()*(18)+1); 
+  const randIndex = Math.floor(Math.random()*(18)); 
   front_face = randIndex;
   const randText = instructions[randIndex];
   return randText;
+}
+
+function randDir() {
+  var dir = Math.floor(Math.random() *(4));
+  console.log("dir: " + dir);
+  return dir;
+    
 }
 
 
@@ -111,7 +134,7 @@ function main() {
 
   //randomize texture
   const instText = randInst();
-
+  const dirInt = randDir();
   // Vertex shader program
 
   const vsSource = `
@@ -119,11 +142,17 @@ function main() {
     attribute vec3 aVertexNormal;
     attribute vec2 aTextureCoord;
     uniform vec3 aDirectionalLightColor;
-    uniform vec3 aEyeDirectionNormal;
+ 
     uniform vec3 aReflectedNormal;
     uniform mat4 uNormalMatrix;
     uniform mat4 uModelViewMatrix;
     uniform mat4 uProjectionMatrix;
+    uniform bool isUp;
+    uniform bool isDown;
+    uniform bool isLeft;
+    uniform bool isRight;
+    uniform bool colored;
+
     varying highp vec2 vTextureCoord;
     varying highp vec3 vLighting;
     void main(void) {
@@ -139,8 +168,35 @@ function main() {
       highp vec3 directionalVector = normalize(vec3(0.0, 1.0, 0.0));
       highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
       highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
-      highp vec3 eyeDirectionNormal = normalize(vec3(-1,0,0));
-      highp vec3 reflectedNormal = vec3(-1,0,0) - vertexPosition;
+      highp vec3 eyeDirectionNormal;
+      highp vec3 reflectedNormal;
+
+      if(colored) {
+        if(isUp) {
+           eyeDirectionNormal = normalize(vec3(0,1,0));
+           reflectedNormal = vec3(0,1,0) - vertexPosition;
+        } 
+
+        if(isLeft) {
+           eyeDirectionNormal = normalize(vec3(-1,0,0));
+           reflectedNormal = vec3(-1,0,0) - vertexPosition;
+        }
+
+        if(isDown) {
+           eyeDirectionNormal = normalize(vec3(0,-1,0));
+           reflectedNormal = vec3(0,-1,0) - vertexPosition;
+        }
+
+        if(isRight) {
+           eyeDirectionNormal = normalize(vec3(1,0,0));
+           reflectedNormal = vec3(1,0,0) - vertexPosition;
+        }
+      }else{
+         eyeDirectionNormal = normalize(vec3(-1,0,0));
+         reflectedNormal = vec3(-1,0,0) - vertexPosition;
+      }
+      
+     
       highp float specularCoefficient = max(dot(reflectedNormal,eyeDirectionNormal),0.0);
       vLighting = ambientLight + (directionalLightColor * directional) + specularCoefficient;
     
@@ -181,7 +237,12 @@ function main() {
       normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
       uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
       directionalLightColor: gl.getUniformLocation(shaderProgram, 'aDirectionalLightColor'),
-      eyeDirectionNormal: gl.getUniformLocation(shaderProgram, 'eyeDirectionNormal')
+      isUp: gl.getUniformLocation(shaderProgram, 'isUp'),
+      isDown: gl.getUniformLocation(shaderProgram, 'isDown'),
+      isLeft: gl.getUniformLocation(shaderProgram, 'isLeft'),
+      isRight: gl.getUniformLocation(shaderProgram, 'isRight'),
+      colored: gl.getUniformLocation(shaderProgram, 'colored'),
+
     },
   };
 
@@ -189,7 +250,8 @@ function main() {
     const texture = loadTexture(gl, 'directions_atlas.png');
     clearInterval(timer)
     seconds = 6
-    rotate(gl, programInfo, buffers, texture, 0, instText); //draws the scene when loaded
+    var colored = (front_face>=10 && front_face<=17);
+    rotate(gl, programInfo, buffers, texture, 0, instText, dirInt); //draws the scene when loaded
     document.onkeydown = function(e){ //rotates depending on the key pressed
       
       if(can_rotate==true && seconds > 0){
@@ -225,32 +287,52 @@ function main() {
             default: 
               return;
         }
-        if(checkIfValidMove(move)==true){
-          score++;
-          changeScore();
-          can_rotate = false;
-          rotate(gl, programInfo, buffers, texture, deltaTime, instText);
-        }
-        else{
-          game_over = true;
-          var isOver = confirm("TALO KA NA\n(Lalaban ka pa ba?)");
-          if (!isOver){
+        if(colored==true){
+          if(checkColor(dirInt,move)==true){
+            score++;
+            changeScore();
+            can_rotate = false;
+            rotate(gl, programInfo, buffers, texture, deltaTime, instText, dirInt);
+          }
+          else{
+             game_over = true;
+            var isOver = confirm("TALO KA NA\n(Lalaban ka pa ba?)");
+            if (!isOver){
+              document.getElementById("back").click();
+            }
             score = 0;
             changeScore();
-            document.getElementById("back").click();
           }
         }
+        else{
+          if(checkIfValidMove(move)==true){
+            score++;
+            changeScore();
+            can_rotate = false;
+            rotate(gl, programInfo, buffers, texture, deltaTime, instText, dirInt);
+          }
+          else{
+            game_over = true;
+            var isOver = confirm("TALO KA NA\n(Lalaban ka pa ba?)");
+            if (!isOver){
+              document.getElementById("back").click();
+            }
+            score = 0;
+            changeScore();
+          }
+        }
+        
         main();
       }
   };
 }
 
-function rotate(gl, programInfo, buffers, texture, deltaTime, instText){
+function rotate(gl, programInfo, buffers, texture, deltaTime, instText, dirInt){
   var increment = 0;
   var count = 0;
     //Draw the scene repeatedly
     function render(now) {
-      drawScene(gl, programInfo, buffers, texture, deltaTime, instText);
+      drawScene(gl, programInfo, buffers, texture, deltaTime, instText, dirInt);
       count++;
       if(count==20){
         can_rotate = true;
@@ -498,7 +580,7 @@ function isPowerOf2(value) {
 //
 // Draw the scene.
 //
-function drawScene(gl, programInfo, buffers, texture, deltaTime, instText) {
+function drawScene(gl, programInfo, buffers, texture, deltaTime, instText, dirInt) {
   gl.clearColor(1.0, 1.0, 1.0, 1.0);  // Clear to black, fully opaque
   gl.clearDepth(1.0);                 // Clear everything
   gl.enable(gl.DEPTH_TEST);           // Enable depth testing
@@ -651,22 +733,12 @@ function drawScene(gl, programInfo, buffers, texture, deltaTime, instText) {
 
   // Tell the shader we bound the texture to texture unit 0
   gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
-
+  var colored = false;
+  
    //check if instruction is colored
   if(instText[0]==0.6 || instText[0]==0.81){
+    colored = true;
     //check color of light
-    const randIndex = Math.floor(Math.random()*(4)+1);
-    
-    if(randIndex == 1) {
-      // up
-    } else if(randIndex == 2){
-      // down
-    } else if(randIndex == 3){
-      // left
-    } else if(randIndex == 4){
-      // right
-    }
-
     if(instText[1]==0){
       //insert randomization of light position
       gl.uniform3f(programInfo.uniformLocations.directionalLightColor, 1.0,0.0,0.0);
@@ -688,8 +760,29 @@ function drawScene(gl, programInfo, buffers, texture, deltaTime, instText) {
     gl.uniform3f(programInfo.uniformLocations.directionalLightColor, 1.0,1.0,1.0);
   }
 
-  
+  gl.uniform1i(programInfo.uniformLocations.colored, colored);
 
+  if(dirInt == 0){
+      gl.uniform1i(programInfo.uniformLocations.isUp, true);
+      gl.uniform1i(programInfo.uniformLocations.isDown, false);
+      gl.uniform1i(programInfo.uniformLocations.isLeft, false);
+      gl.uniform1i(programInfo.uniformLocations.isRight, false);
+    } else if(dirInt == 1){
+      gl.uniform1i(programInfo.uniformLocations.isUp, false);
+      gl.uniform1i(programInfo.uniformLocations.isDown, false);
+      gl.uniform1i(programInfo.uniformLocations.isLeft, true);
+      gl.uniform1i(programInfo.uniformLocations.isRight, false);
+    } else if(dirInt == 2){
+      gl.uniform1i(programInfo.uniformLocations.isUp, false);
+      gl.uniform1i(programInfo.uniformLocations.isDown, true);
+      gl.uniform1i(programInfo.uniformLocations.isLeft, false);
+      gl.uniform1i(programInfo.uniformLocations.isRight, false);
+    } else if(dirInt == 3){
+      gl.uniform1i(programInfo.uniformLocations.isUp, false);
+      gl.uniform1i(programInfo.uniformLocations.isDown, false);
+      gl.uniform1i(programInfo.uniformLocations.isLeft, false);
+      gl.uniform1i(programInfo.uniformLocations.isRight, true);
+    } 
   {
     const vertexCount = 36;
     const type = gl.UNSIGNED_SHORT;
