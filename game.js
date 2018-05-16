@@ -108,6 +108,9 @@ function main() {
     return;
   }
 
+  //randomize texture
+  const instText = randInst();
+
   // Vertex shader program
 
   const vsSource = `
@@ -148,6 +151,24 @@ function main() {
     }
   `;
 
+  //check if instruction is colored
+  if(instText[0]==0.6 || instText[0]==0.81){
+    //check color of light
+    if(instText[1]==0){
+      //insert randomization of light position
+      console.log("pula");
+    }else if(instText[1]==0.2){
+      //insert randomization of light position
+      console.log("asul");
+    }else if(instText[1]==0.4){
+      //insert randomization of light position
+      console.log("dilaw");
+    }else if(instText[1]==0.6){
+      //insert randomization of light position
+      console.log("berde");
+    }
+  }
+
   // Initialize a shader program; this is where all the lighting
   // for the vertices and so forth is established.
   const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
@@ -171,7 +192,7 @@ function main() {
 		},
 	};
 
-  	const buffers = initBuffers(gl);
+  	const buffers = initBuffers(gl,instText);
   	const texture = loadTexture(gl, 'directions_atlas.png');
   	clearInterval(timer)
     seconds = 6
@@ -250,7 +271,7 @@ function rotate(gl, programInfo, buffers, texture, deltaTime){
 
 // Initialize the buffers we'll need. For this demo, we just
 // have one object -- a simple three-dimensional cube.
-function initBuffers(gl) {
+function initBuffers(gl,instText) {
 
   // Create a buffer for the cube's vertex positions
   const positionBuffer = gl.createBuffer();
@@ -356,25 +377,6 @@ function initBuffers(gl) {
 
   const textureCoordBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, textureCoordBuffer);
-  const instText = randInst();
-
-  //check if instruction is colored
-  if(instText[0]==0.6 || instText[0]==0.81){
-    //check color of light
-    if(instText[1]==0){
-      //insert randomization of light position
-      console.log("pula");
-    }else if(instText[1]==0.2){
-      //insert randomization of light position
-      console.log("asul");
-    }else if(instText[1]==0.4){
-      //insert randomization of light position
-      console.log("dilaw");
-    }else if(instText[1]==0.6){
-      //insert randomization of light position
-      console.log("berde");
-    }
-  }
 
   const textureCoordinates = [
     // Front
