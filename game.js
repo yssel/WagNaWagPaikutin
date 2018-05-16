@@ -3,7 +3,7 @@ var cubeRotation = 0;
 var y_axis = false;
 var x_axis = false;
 var can_rotate = true;
-var seconds = 5;
+var seconds = 3;
 var timer = null;
 var countdown = null;
 countdown = !!countdown ? countdown : countDown(timer);
@@ -61,7 +61,7 @@ function countDown(timer){
       if(front_face==4){
         score++;
         clearInterval(timer);
-        seconds = 6;
+        seconds = 4;
         changeScore();
         document.getElementById('time').innerHTML = --seconds;
         countDown(timer);
@@ -249,7 +249,7 @@ function main() {
     const buffers = initBuffers(gl,instText);
     const texture = loadTexture(gl, 'directions_atlas.png');
     clearInterval(timer)
-    seconds = 6
+    seconds = 4;
     var colored = (front_face>=10 && front_face<=17);
     rotate(gl, programInfo, buffers, texture, 0, instText, dirInt); //draws the scene when loaded
     document.onkeydown = function(e){ //rotates depending on the key pressed
