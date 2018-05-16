@@ -57,9 +57,10 @@ function countDown(timer){
         game_over = true;
         var isOver = confirm("TALO KA NA\n(Lalaban ka pa ba?)");
         if (!isOver){
+          document.getElementById("back").click();
+        }else{
           score = 0;
           changeScore();
-          document.getElementById("back").click();
         }
       }
     }else{
@@ -246,9 +247,11 @@ function main() {
   				game_over = true;
           var isOver = confirm("TALO KA NA\n(Lalaban ka pa ba?)");
           if (!isOver){
+            console.log('new game')
+            document.getElementById("back").click();
+          }else{
   				  score = 0;
             changeScore();
-            document.getElementById("back").click();
           }
   			}
 			  main();
