@@ -73,10 +73,13 @@ function countDown(timer){
         game_over = true;
         var isOver = confirm("TALO KA NA\n(Lalaban ka pa ba?)");
         if (!isOver){
-          score = 0;
-          changeScore();
           document.getElementById("back").click();
         }
+        score = 0;
+        seconds = 4;
+        countDown(timer);
+        changeScore();
+        main();
       }
     }else{
       document.getElementById('time').innerHTML = --seconds;
