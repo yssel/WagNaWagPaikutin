@@ -41,25 +41,31 @@ function changeScore(){
 
 function countDown(timer){
   timer = setInterval(function(){
-    // if seconds < 0 = seconds = 0
-    //if(seconds <= 1) clearInterval(timer)
-    if(seconds<=0){
-    	if(front_face==4){
-    		score++;
-    		clearInterval(timer);
-    		seconds = 6;
-    		changeScore();
-    		countDown(timer);
-    		main();
-    	}
-    	else{
-    		score = 0;
-    		changeScore();
-    		//alert("GAME OVER");
-    		clearInterval(timer);
-    	}
+    if(seconds<=1){
+      if(front_face==4){
+        score++;
+        clearInterval(timer);
+        seconds = 6;
+        changeScore();
+        document.getElementById('time').innerHTML = --seconds;
+        countDown(timer);
+        main();
+      }
+      else{
+        document.getElementById('time').innerHTML = --seconds;
+        clearInterval(timer);
+        game_over = true;
+        var isOver = confirm("TALO KA NA\n(Lalaban ka pa ba?)");
+        if (!isOver){
+          score = 0;
+          changeScore();
+          document.getElementById("back").click();
+        }
+      }
+    }else{
+      document.getElementById('time').innerHTML = --seconds;
     }
-    document.getElementById('time').innerHTML = --seconds;
+
   }, 1000)
 }
 
@@ -171,7 +177,8 @@ function main() {
     seconds = 6
   	rotate(gl, programInfo, buffers, texture, 0); //draws the scene when loaded
   	document.onkeydown = function(e){ //rotates depending on the key pressed
-      if(can_rotate==true){
+      
+      if(can_rotate==true && seconds > 0){
   			cubeRotation = 0;
 	  		var deltaTime;
 	  		var move;
@@ -180,7 +187,7 @@ function main() {
 		            x_axis = true;
 		            y_axis = false;
 		            deltaTime = one_rotation/20;
-					move = 1;
+					      move = 1;
 		            break;
 		        case 38: //up
 		            x_axis = false;
@@ -209,19 +216,17 @@ function main() {
 		    	changeScore();
 			    can_rotate = false;
 			    rotate(gl, programInfo, buffers, texture, deltaTime);
-			    //main();
-			}
-			else{
-				game_over = true;
-				score = 0;
-				//alert("GAME OVER");
-        var isOver = confirm("TALO KA NA\n(Lalaban ka pa ba?)");
-        if (!isOver){
-          document.getElementById("back").click();
-        }
-        changeScore();
-			}
-			main();
+  			}
+  			else{
+  				game_over = true;
+          var isOver = confirm("TALO KA NA\n(Lalaban ka pa ba?)");
+          if (!isOver){
+  				  score = 0;
+            changeScore();
+            document.getElementById("back").click();
+          }
+  			}
+			  main();
   		}
 	};
 }
