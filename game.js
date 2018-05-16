@@ -12,31 +12,31 @@ var game_over = false;
 var score = 0;
 
 function checkIfValidMove(move){
-	if(front_face>=10) return true;
-	const answers = [
-		[0],
-		[1],
-		[2],
-		[3],
-		[],
-		[1, 2, 3],
-		[0, 2, 3],
-		[0, 1, 3],
-		[0, 1, 2],
-		[0, 1, 2, 3]
-	];
-	
-	var ret_value = false;
+  if(front_face>=10) return true;
+  const answers = [
+    [0],
+    [1],
+    [2],
+    [3],
+    [],
+    [1, 2, 3],
+    [0, 2, 3],
+    [0, 1, 3],
+    [0, 1, 2],
+    [0, 1, 2, 3]
+  ];
+  
+  var ret_value = false;
 
-	for(var i=0; i<answers[front_face].length; i++){
-		if(move==answers[front_face][i]) ret_value = true;
-	}
-	
-	return ret_value;
+  for(var i=0; i<answers[front_face].length; i++){
+    if(move==answers[front_face][i]) ret_value = true;
+  }
+  
+  return ret_value;
 }
 
 function changeScore(){
-	 document.getElementById('score').innerHTML = score;
+   document.getElementById('score').innerHTML = score;
 }
 
 function countDown(timer){
@@ -119,6 +119,9 @@ function main() {
     attribute vec4 aVertexPosition;
     attribute vec3 aVertexNormal;
     attribute vec2 aTextureCoord;
+    uniform vec3 aDirectionalLightColor;
+    uniform vec3 aEyeDirectionNormal;
+    uniform vec3 aReflectedNormal;
     uniform mat4 uNormalMatrix;
     uniform mat4 uModelViewMatrix;
     uniform mat4 uProjectionMatrix;
@@ -132,7 +135,8 @@ function main() {
 
 
       highp vec3 ambientLight = vec3(0.3, 0.3, 0.3) * vec3(0.9, 0.5, 0.3);
-      highp vec3 directionalLightColor = vec3(1, 0, 0);
+      // highp vec3 directionalLightColor = vec3(0, 1, 0);
+      highp vec3 directionalLightColor = aDirectionalLightColor;
       highp vec3 directionalVector = normalize(vec3(0.0, 1.0, 0.0));
       highp vec4 transformedNormal = uNormalMatrix * vec4(aVertexNormal, 1.0);
       highp float directional = max(dot(transformedNormal.xyz, directionalVector), 0.0);
@@ -156,23 +160,6 @@ function main() {
     }
   `;
 
-  //check if instruction is colored
-  if(instText[0]==0.6 || instText[0]==0.81){
-    //check color of light
-    if(instText[1]==0){
-      //insert randomization of light position
-      console.log("pula");
-    }else if(instText[1]==0.2){
-      //insert randomization of light position
-      console.log("asul");
-    }else if(instText[1]==0.4){
-      //insert randomization of light position
-      console.log("dilaw");
-    }else if(instText[1]==0.6){
-      //insert randomization of light position
-      console.log("berde");
-    }
-  }
 
   // Initialize a shader program; this is where all the lighting
   // for the vertices and so forth is established.
@@ -182,97 +169,98 @@ function main() {
   // Look up which attributes our shader program is using
   // for aVertexPosition, aVertexNormal, aTextureCoord,
   // and look up uniform locations.
-	const programInfo = {
-		program: shaderProgram,
-		attribLocations: {
-			vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
-			vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
-			textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
-		},
-		uniformLocations: {
-			projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-			modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
-			normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
-			uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
-		},
-	};
+  const programInfo = {
+    program: shaderProgram,
+    attribLocations: {
+      vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+      vertexNormal: gl.getAttribLocation(shaderProgram, 'aVertexNormal'),
+      textureCoord: gl.getAttribLocation(shaderProgram, 'aTextureCoord'),
+    },
+    uniformLocations: {
+      projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
+      modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+      normalMatrix: gl.getUniformLocation(shaderProgram, 'uNormalMatrix'),
+      uSampler: gl.getUniformLocation(shaderProgram, 'uSampler'),
+      directionalLightColor: gl.getUniformLocation(shaderProgram, 'aDirectionalLightColor'),
+      eyeDirectionNormal: gl.getUniformLocation(shaderProgram, 'eyeDirectionNormal')
+    },
+  };
 
-  	const buffers = initBuffers(gl,instText);
-  	const texture = loadTexture(gl, 'directions_atlas.png');
-  	clearInterval(timer)
+    const buffers = initBuffers(gl,instText);
+    const texture = loadTexture(gl, 'directions_atlas.png');
+    clearInterval(timer)
     seconds = 6
-  	rotate(gl, programInfo, buffers, texture, 0); //draws the scene when loaded
-  	document.onkeydown = function(e){ //rotates depending on the key pressed
+    rotate(gl, programInfo, buffers, texture, 0, instText); //draws the scene when loaded
+    document.onkeydown = function(e){ //rotates depending on the key pressed
       
       if(can_rotate==true && seconds > 0){
-  			cubeRotation = 0;
-	  		var deltaTime;
-	  		var move;
-		    switch (e.keyCode) {
-		        case 37: //left
-		            x_axis = true;
-		            y_axis = false;
-		            deltaTime = one_rotation/20;
-					      move = 1;
-		            break;
-		        case 38: //up
-		            x_axis = false;
-		            y_axis = true;
-		            deltaTime = one_rotation/20;
-		            move = 0;
-		            break;
-		        case 39: //right
-		            x_axis = true;
-		            y_axis = false;
-		            deltaTime = one_rotation/20*-1;
-		            move = 3;
-		            break;
-		        case 40: //down
-		            x_axis = false;
-		            y_axis = true;
-		            deltaTime = one_rotation/20*-1;
-		            move = 2;
+        cubeRotation = 0;
+        var deltaTime;
+        var move;
+        switch (e.keyCode) {
+            case 37: //left
+                x_axis = true;
+                y_axis = false;
+                deltaTime = one_rotation/20;
+                move = 1;
+                break;
+            case 38: //up
+                x_axis = false;
+                y_axis = true;
+                deltaTime = one_rotation/20;
+                move = 0;
+                break;
+            case 39: //right
+                x_axis = true;
+                y_axis = false;
+                deltaTime = one_rotation/20*-1;
+                move = 3;
+                break;
+            case 40: //down
+                x_axis = false;
+                y_axis = true;
+                deltaTime = one_rotation/20*-1;
+                move = 2;
 
-		            break;
-		        default: 
-		         	return;
-		    }
-		    if(checkIfValidMove(move)==true){
-		    	score++;
-		    	changeScore();
-			    can_rotate = false;
-			    rotate(gl, programInfo, buffers, texture, deltaTime);
-  			}
-  			else{
-  				game_over = true;
+                break;
+            default: 
+              return;
+        }
+        if(checkIfValidMove(move)==true){
+          score++;
+          changeScore();
+          can_rotate = false;
+          rotate(gl, programInfo, buffers, texture, deltaTime, instText);
+        }
+        else{
+          game_over = true;
           var isOver = confirm("TALO KA NA\n(Lalaban ka pa ba?)");
           if (!isOver){
-            console.log('new game')
             document.getElementById("back").click();
           }else{
   				  score = 0;
             changeScore();
           }
-  			}
-			  main();
-  		}
-	};
+        }
+        main();
+      }
+  };
 }
 
-function rotate(gl, programInfo, buffers, texture, deltaTime){
-	var increment = 0;
-	var count = 0;
-  	//Draw the scene repeatedly
-  	function render(now) {
-  		drawScene(gl, programInfo, buffers, texture, deltaTime);
-	    count++;
-	    if(count==20){
-	    	can_rotate = true;
-	    	return;
-	    }
-	    requestAnimationFrame(render);
-	}
-	requestAnimationFrame(render);
+function rotate(gl, programInfo, buffers, texture, deltaTime, instText){
+  var increment = 0;
+  var count = 0;
+    //Draw the scene repeatedly
+    function render(now) {
+      drawScene(gl, programInfo, buffers, texture, deltaTime, instText);
+      count++;
+      if(count==20){
+        can_rotate = true;
+        return;
+      }
+      requestAnimationFrame(render);
+  }
+  requestAnimationFrame(render);
 }
 
 
@@ -392,7 +380,7 @@ function initBuffers(gl,instText) {
     instText[4], instText[5], 
     instText[6], instText[7], 
     // Back
-   	0.0, 0.0,
+    0.0, 0.0,
     0.0, 0.0,
     0.0, 0.0,
     0.0, 0.0,
@@ -512,7 +500,7 @@ function isPowerOf2(value) {
 //
 // Draw the scene.
 //
-function drawScene(gl, programInfo, buffers, texture, deltaTime) {
+function drawScene(gl, programInfo, buffers, texture, deltaTime, instText) {
   gl.clearColor(1.0, 1.0, 1.0, 1.0);  // Clear to black, fully opaque
   gl.clearDepth(1.0);                 // Clear everything
   gl.enable(gl.DEPTH_TEST);           // Enable depth testing
@@ -665,6 +653,44 @@ function drawScene(gl, programInfo, buffers, texture, deltaTime) {
 
   // Tell the shader we bound the texture to texture unit 0
   gl.uniform1i(programInfo.uniformLocations.uSampler, 0);
+
+   //check if instruction is colored
+  if(instText[0]==0.6 || instText[0]==0.81){
+    //check color of light
+    const randIndex = Math.floor(Math.random()*(4)+1);
+    
+    if(randIndex == 1) {
+      // up
+    } else if(randIndex == 2){
+      // down
+    } else if(randIndex == 3){
+      // left
+    } else if(randIndex == 4){
+      // right
+    }
+
+    if(instText[1]==0){
+      //insert randomization of light position
+      gl.uniform3f(programInfo.uniformLocations.directionalLightColor, 1.0,0.0,0.0);
+      console.log("pula");
+    }else if(instText[1]==0.2){
+      //insert randomization of light position
+      gl.uniform3f(programInfo.uniformLocations.directionalLightColor, 0.0,0.0,1.0);
+      console.log("asul");
+    }else if(instText[1]==0.4){
+      //insert randomization of light position
+      gl.uniform3f(programInfo.uniformLocations.directionalLightColor, 1.0,1.0,0.0);
+      console.log("dilaw");
+    }else if(instText[1]==0.6){
+      //insert randomization of light position
+      gl.uniform3f(programInfo.uniformLocations.directionalLightColor, 0.0,1.0,0.0);
+      console.log("berde");
+    }
+  }else{
+    gl.uniform3f(programInfo.uniformLocations.directionalLightColor, 1.0,1.0,1.0);
+  }
+
+  
 
   {
     const vertexCount = 36;
