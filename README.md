@@ -1,25 +1,9 @@
-# cmsc161
+# 'Wag na 'Wag Paikutin
+### Tagalog version of 'Not Not - A Brain Buster' Mobile App Game
 
-texture coordinates:
-Hilaga				[0.2, 0.0, 0.2, 0.2, 0.0, 0.2, 0.0, 0.0,]
-Kanluran			[0.2, 0.2, 0.2, 0.4, 0.0, 0.4, 0.0, 0.2,]
-Timog				[0.2, 0.4, 0.2, 0.6, 0.0, 0.6, 0.0, 0.4,]
-Silangan			[0.2, 0.6, 0.2, 0.8, 0.0, 0.8, 0.0, 0.6,]
-Tumunganga			[0.2, 0.8, 0.2, 1.0, 0.0, 1.0, 0.0, 0.8,]
+##### Get started:
+Clone or download the repository and open **index.html** through **Firefox** 
+(Because Chrome can't support some of the WebGL features)
 
-Hindi Hilaga		[0.4, 0.0, 0.4, 0.2, 0.2, 0.2, 0.2, 0.0,]
-Hindi Kanluran		[0.4, 0.2, 0.4, 0.4, 0.2, 0.4, 0.2, 0.2,]
-Hindi Timog			[0.4, 0.4, 0.4, 0.6, 0.2, 0.6, 0.2, 0.4,]
-Hindi Silangan		[0.4, 0.6, 0.4, 0.8, 0.2, 0.8, 0.2, 0.6,]
-Huwag Tumunganga	[0.4, 0.8, 0.4, 1.0, 0.2, 1.0, 0.2, 0.8,]
-
-Pula				[0.6, 0.0, 0.6, 0.2, 0.4, 0.2, 0.4, 0.0,]
-Asul				[0.6, 0.2, 0.6, 0.4, 0.4, 0.4, 0.4, 0.2,]
-Dilaw				[0.6, 0.4, 0.6, 0.6, 0.4, 0.6, 0.4, 0.4,]
-Berde				[0.6, 0.6, 0.6, 0.8, 0.4, 0.8, 0.4, 0.6,]
-
-Huwag Pula			[0.81, 0.0, 0.81, 0.2, 0.61, 0.2, 0.61, 0.0,]
-Huwag Asul			[0.81, 0.2, 0.81, 0.4, 0.61, 0.4, 0.61, 0.2,]
-Huwag Dilaw			[0.81, 0.4, 0.81, 0.6, 0.61, 0.6, 0.61, 0.4,]
-Huwag Berde			[0.81, 0.6, 0.81, 0.8, 0.61, 0.8, 0.61, 0.6,]
-
+###### Made with WebGL
+###### Undergraduate final project for *CMSC 161 - Interactive Computer Graphics*
